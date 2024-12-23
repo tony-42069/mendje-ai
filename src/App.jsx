@@ -1,11 +1,28 @@
 import React from 'react';
-import ChatBox from './components/Chat/ChatBox';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Layout/Navbar';
+import Footer from './components/Layout/Footer';
+import Home from './pages/Home';
+import Chat from './pages/Chat';
+import Pricing from './pages/Pricing';
+import Account from './pages/Account';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <ChatBox />
-    </div>
+    <BrowserRouter>
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/account" element={<Account />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </BrowserRouter>
   );
 }
 
