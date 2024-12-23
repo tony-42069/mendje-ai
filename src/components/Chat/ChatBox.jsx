@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send } from 'lucide-react';
+import { Send, Brain, Sparkles, Network } from 'lucide-react';
 import Message from './Message';
 import { getAIResponse } from '/src/services/ai.js';
 import { translations } from '../../translations/al';
@@ -43,17 +43,36 @@ const ChatBox = () => {
     // Background container with coastline image
     <div className="h-screen w-full bg-cover bg-center bg-no-repeat"
          style={{
-           backgroundImage: "url('/images/albania-coast.jpg')", // Replace with actual coastline image
-           backgroundColor: "rgba(0, 0, 0, 0.5)", // Fallback color
+           backgroundImage: "url('/images/albania-coast.jpg')",
+           backgroundColor: "rgba(0, 0, 0, 0.5)",
            backgroundBlendMode: "overlay"
          }}>
       {/* Centered chat container */}
       <div className="container mx-auto h-screen px-4 py-8 flex items-center justify-center">
         <div className="w-full max-w-2xl h-[600px] flex flex-col rounded-xl overflow-hidden bg-black bg-opacity-75 backdrop-blur-sm shadow-2xl">
-          {/* Chat Header - Albanian flag inspired */}
+          {/* Modern Header with Brain Theme */}
           <div className="bg-red-600 text-white px-6 py-4 shadow-lg">
-            <h1 className="text-2xl font-bold tracking-wide">{translations.appName}</h1>
-            <p className="text-sm mt-1 opacity-90 font-medium">{translations.appDescription}</p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <Brain className="w-8 h-8" />
+                <div>
+                  <h1 className="text-2xl font-bold tracking-wide flex items-center">
+                    MendjeAI
+                    <Sparkles className="w-5 h-5 ml-2 opacity-75 animate-pulse" />
+                  </h1>
+                  <p className="text-sm mt-1 opacity-90 font-medium flex items-center">
+                    <Network className="w-4 h-4 mr-2 animate-spin-slow" />
+                    {translations.appDescription}
+                  </p>
+                </div>
+              </div>
+              {/* Neural animation pattern */}
+              <div className="opacity-20 hidden md:block">
+                <div className="w-16 h-16 rounded-full border-2 border-white animate-pulse flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full border-2 border-white animate-spin-slow"></div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Messages Container */}
