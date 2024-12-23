@@ -2,9 +2,13 @@ import React, { useState } from 'react';
 import { Send } from 'lucide-react';
 import Message from './Message';
 import { generateResponse } from '../../services/ai';
+import { translations } from '../../translations/al';
 
 const ChatBox = () => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([{
+    text: translations.welcomeMessage,
+    isUser: false
+  }]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,7 +30,7 @@ const ChatBox = () => {
     } catch (error) {
       console.error('Chat Error:', error);
       const errorMessage = { 
-        text: "Më vjen keq, por ka ndodhur një gabim. Ju lutem provoni përsëri.", 
+        text: translations.generalError, 
         isUser: false 
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -39,8 +43,8 @@ const ChatBox = () => {
     <div className="h-screen flex flex-col bg-white">
       {/* Chat Header */}
       <div className="bg-blue-500 text-white px-4 py-3 shadow">
-        <h1 className="text-xl font-semibold">MendjeAI</h1>
-        <p className="text-sm opacity-90">Asistenti juaj i inteligjencës artificiale</p>
+        <h1 className="text-xl font-semibold">{translations.appName}</h1>
+        <p className="text-sm opacity-90">{translations.appDescription}</p>
       </div>
 
       {/* Messages Container */}
@@ -68,7 +72,7 @@ const ChatBox = () => {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Shkruani mesazhin tuaj këtu..."
+            placeholder={translations.inputPlaceholder}
             className="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
           />
           <button
