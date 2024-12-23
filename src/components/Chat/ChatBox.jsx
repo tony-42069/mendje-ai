@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Send } from 'lucide-react';
 import Message from './Message';
+import { generateResponse } from '../../services/ai';
 
 const ChatBox = () => {
   const [messages, setMessages] = useState([]);
@@ -17,16 +18,21 @@ const ChatBox = () => {
     setInput('');
     setIsLoading(true);
 
-    // TODO: Integrate with HuggingFace AI here
-    // For now, just echo back
-    setTimeout(() => {
-      const aiMessage = { 
-        text: "Përshëndetje! Unë jam MendjeAI. Si mund t'ju ndihmoj?", 
+    try {
+      // Get AI response
+      const response = await generateResponse(input);
+      const aiMessage = { text: response, isUser: false };
+      setMessages(prev => [...prev, aiMessage]);
+    } catch (error) {
+      console.error('Chat Error:', error);
+      const errorMessage = { 
+        text: "Më vjen keq, por ka ndodhur një gabim. Ju lutem provoni përsëri.", 
         isUser: false 
       };
-      setMessages(prev => [...prev, aiMessage]);
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
