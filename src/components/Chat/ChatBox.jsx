@@ -76,22 +76,27 @@ const ChatBox = () => {
           </div>
 
           {/* Messages Container */}
-          <div className="flex-1 overflow-y-auto p-6">
-            {messages.map((msg, idx) => (
-              <Message key={idx} message={msg.text} isUser={msg.isUser} />
-            ))}
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-red-600 bg-opacity-20 rounded-lg px-4 py-2">
-                  <div className="animate-pulse flex space-x-2">
-                    <div className="w-2 h-2 bg-red-400 rounded-full"></div>
-                    <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse delay-100"></div>
-                    <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse delay-200"></div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          <div className="flex-1 overflow-y-auto p-6 relative">
+  {/* Brain Watermark */}
+  <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-5">
+    <Brain className="w-64 h-64 text-white" />
+  </div>
+  
+  {messages.map((msg, idx) => (
+    <Message key={idx} message={msg.text} isUser={msg.isUser} />
+  ))}
+  {isLoading && (
+    <div className="flex justify-start">
+      <div className="bg-red-600 bg-opacity-20 rounded-lg px-4 py-2">
+        <div className="animate-pulse flex space-x-2">
+          <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+          <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse delay-100"></div>
+          <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse delay-200"></div>
+        </div>
+      </div>
+    </div>
+  )}
+</div>
 
           {/* Input Form */}
           <div className="border-t border-gray-700 bg-gray-800 bg-opacity-50 p-4">
