@@ -10,6 +10,8 @@ Albanian Language AI Chat Assistant powered by HuggingFace's AI models.
 ## Overview
 MendjeAI is a Progressive Web App that provides an AI chat interface fully in Albanian language. It's designed to be simple, fast, and accessible across all devices.
 
+![MendjeAI Preview](public/images/preview.png)
+
 ## Features
 - 🇦🇱 Full Albanian language support
 - 💬 Real-time chat interface
