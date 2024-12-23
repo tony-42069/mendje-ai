@@ -49,3 +49,9 @@ mendje-ai/
 VITE_HUGGINGFACE_API_KEY=your_api_key_here
 4. Run development server: 
     npm run dev
+
+Contributing
+This project is currently under active development. Feel free to submit issues and pull requests.
+
+License
+ISC
