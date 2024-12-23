@@ -25,10 +25,11 @@ MendjeAI is a Progressive Web App that provides an AI chat interface fully in Al
 - **Hosting**: Vercel (Frontend)
 
 ## Project Structure
+```
 mendje-ai/
 ├── src/
 │   ├── components/
-│   │   └── Chat/
+│   │   └── Chat/               
 │   │       ├── ChatBox.jsx     # Main chat interface
 │   │       └── Message.jsx     # Message bubbles
 │   ├── services/
@@ -39,19 +40,35 @@ mendje-ai/
 │   └── main.jsx
 ├── public/
 │   └── manifest.json          # PWA manifest
+```
 
 ## Setup
 1. Clone the repository
 2. Install dependencies:
    ```bash
    npm install
-3. Create a .env file in the root directory with:
-VITE_HUGGINGFACE_API_KEY=your_api_key_here
-4. Run development server: 
-    npm run dev
+   ```
+3. Create a `.env` file in the root directory with:
+   ```env
+   VITE_HUGGINGFACE_API_KEY=your_api_key_here
+   ```
+4. Run development server:
+   ```bash
+   npm run dev
+   ```
 
-Contributing
+## Development Progress
+- ✅ Project initialization
+- ✅ Basic project structure
+- ✅ Chat interface components
+- ✅ HuggingFace AI integration
+- ✅ Albanian translations
+- ✅ Basic PWA setup
+- 🔄 Deployment configuration (pending)
+- 🔄 Production testing (pending)
+
+## Contributing
 This project is currently under active development. Feel free to submit issues and pull requests.
 
-License
+## License
 ISC
