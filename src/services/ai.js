@@ -1,59 +1,47 @@
-import { HfInference } from '@huggingface/inference';
+const OPENAI_API_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
+const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
-const hf = new HfInference(import.meta.env.VITE_HUGGINGFACE_API_KEY);
-
-const SYSTEM_PROMPT = `Ti je MendjeAI, një asistent i inteligjencës artificiale që flet vetëm shqip. 
-Ti je krijuar për të ndihmuar përdoruesit me këshilla, informacione dhe mbështetje në gjuhën shqipe.
-Përgjigju shkurt dhe qartë. Ruaj një ton miqësor dhe profesional.`;
-
-const createPrompt = (messages) => {
-  const conversation = messages
-    .map(msg => `${msg.role === 'user' ? 'Përdoruesi' : 'Asistenti'}: ${msg.content}`)
-    .join('\n');
-  
-  return `${SYSTEM_PROMPT}\n\n${conversation}\nAsistenti:`;
-};
-
-const DEFAULT_PARAMS = {
-  temperature: 0.7,
-  max_new_tokens: 200,
-  repetition_penalty: 1.2,
-  top_p: 0.95,
-  stop: ["Përdoruesi:", "Asistenti:"]
-};
-
-export async function getAIResponse(messages) {
+export async function getAIResponse(input) {
   try {
-    const prompt = createPrompt(messages);
-    
-    const response = await hf.textGeneration({
-      model: "mistralai/Mistral-7B-Instruct-v0.2",
-      inputs: prompt,
-      parameters: DEFAULT_PARAMS
+    const response = await fetch(OPENAI_API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content: `You are MendjeAI, an Albanian language assistant. Follow these guidelines:
+              - Always respond in proper Albanian with correct diacritical marks (ë, ç)
+              - Keep responses natural and concise
+              - Match the user's level of formality
+              - For technical terms, provide both Albanian and English in parentheses when needed
+              - Maintain proper Albanian grammar and sentence structure`
+          },
+          {
+            role: "user",
+            content: input
+          }
+        ],
+        temperature: 0.7,
+        presence_penalty: 0.1,
+        frequency_penalty: 0.1,
+        max_tokens: 500
+      })
     });
 
-    // Clean up response by removing any remaining system prompts or instructions
-    let cleanedResponse = response.generated_text
-      .replace(SYSTEM_PROMPT, '')
-      .replace(/^Asistenti:\s*/i, '')
-      .trim();
-
-    // Additional safety check for Albanian language
-    if (!cleanedResponse.match(/[ëçÇË]/)) {
-      throw new Error("Response does not appear to be in Albanian");
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || 'API call failed');
     }
 
-    return cleanedResponse;
-
+    const data = await response.json();
+    return data.choices[0].message.content;
   } catch (error) {
-    console.error("AI Response Error:", error);
-    return "Më vjen keq, por kam një problem teknik. Ju lutem provoni përsëri.";
+    console.error('Error calling OpenAI:', error);
+    throw new Error('Ndodhi një gabim. Ju lutem provoni përsëri më vonë.');
   }
-}
-
-// Utility function to validate if text is primarily Albanian
-export function isAlbanian(text) {
-  // Check for common Albanian characters and words
-  const albanianMarkers = /[ëçÇË]|është|dhe|për|në|me|të|që/i;
-  return albanianMarkers.test(text);
 }
