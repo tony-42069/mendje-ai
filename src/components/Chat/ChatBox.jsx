@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Send, Brain, Sparkles, Network } from 'lucide-react';
 import Message from './Message';
+import Toast from './Toast';
 import { getAIResponse } from '/src/services/ai.js';
 import { translations } from '../../translations/al';
 
@@ -11,6 +12,8 @@ const ChatBox = () => {
   }]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,20 +30,60 @@ const ChatBox = () => {
       const response = await getAIResponse(input);
       const aiMessage = { text: response, isUser: false };
       setMessages(prev => [...prev, aiMessage]);
+      setError(null);
+      setRetryCount(0);
     } catch (error) {
       console.error('Chat Error:', error);
-      const errorMessage = { 
-        text: translations.generalError, 
+      
+      let errorMessage;
+      if (error.response?.status === 429) {
+        errorMessage = translations.rateLimitError;
+        setError({ message: errorMessage, type: 'rateLimit' });
+      } else if (error.response?.status === 401) {
+        errorMessage = translations.authError;
+        setError({ message: errorMessage, type: 'auth' });
+      } else if (error.response?.status >= 500) {
+        errorMessage = translations.serverError;
+        setError({ message: errorMessage, type: 'server' });
+      } else {
+        errorMessage = translations.networkError;
+        setError({ message: errorMessage, type: 'network' });
+      }
+
+      // Add error message to chat
+      const errorChatMessage = { 
+        text: errorMessage, 
         isUser: false 
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages(prev => [...prev, errorChatMessage]);
+
+      // Implement retry logic for network/server errors
+      if (error.type === 'network' || error.type === 'server') {
+        if (retryCount < 3) {
+          setTimeout(() => {
+            setRetryCount(prev => prev + 1);
+            handleSubmit(e);
+          }, 2000);
+        }
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleCloseToast = () => {
+    setError(null);
+  };
+
   return (
-    // Background container with coastline image
+    <>
+      {error && (
+        <Toast 
+          message={error.message} 
+          type="error" 
+          onClose={handleCloseToast}
+        />
+      )}
     <div className="h-screen w-full bg-cover bg-center bg-no-repeat"
          style={{
            backgroundImage: "url('/images/albania-coast.jpg')",
@@ -127,6 +170,7 @@ const ChatBox = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
